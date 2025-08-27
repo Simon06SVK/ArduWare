@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ArduWare
@@ -14,14 +11,14 @@ namespace ArduWare
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
+            /*Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             Login loginForm = new Login();
             if (loginForm.ShowDialog() == DialogResult.OK)
-            {
-                Application.Run(new Form1());
-            }
+            {*/
+            Application.Run(new MainUI());
+            //}
         }
     }
 }

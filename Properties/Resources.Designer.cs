@@ -63,6 +63,16 @@ namespace ArduWare.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ArduWare {
+            get {
+                object obj = ResourceManager.GetObject("ArduWare", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap connect_icon {
             get {
                 object obj = ResourceManager.GetObject("connect_icon", resourceCulture);

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ArduWare
@@ -32,7 +25,7 @@ namespace ArduWare
             if (username == "admin" && password == "arduware123")
             {
                 this.DialogResult = DialogResult.OK;
-                Form1 main = new Form1();
+                MainUI main = new MainUI();
             }
             else
             {
