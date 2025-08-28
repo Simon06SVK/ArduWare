@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ArduWareUpdater": {
+      "commandName": "Project",
+      "commandLineArgs": "-Verb RunAs"
+    }
+  }
+}

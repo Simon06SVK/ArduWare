@@ -10,6 +10,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduWare", "ArduWare.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduWareUpdater", "..\ArduWareUpdater\ArduWareUpdater.csproj", "{070DDE6B-70D6-4EA9-93BC-FF20527C8816}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main App", "Main App", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updater", "Updater", "{3FA0FDB7-45E8-4C77-B781-8600881A2486}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{334E21A4-BD6D-44CE-8739-898B0390CB9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E22782B-9671-4595-AB5C-B4B448212DAE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{070DDE6B-70D6-4EA9-93BC-FF20527C8816} = {3FA0FDB7-45E8-4C77-B781-8600881A2486}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DF35A5C-694C-452A-9AAA-8888D295F1D4}
