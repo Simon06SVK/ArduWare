@@ -10,6 +10,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Restore NuGet packages
+      run: nuget restore src/App/ArduWare.csproj
+
     - name: Checkout code
       uses: actions/checkout@v4
 
