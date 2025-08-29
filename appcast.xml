@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
-    <title>YourApp Updates</title>
+    <title>ArduWare Update</title>
     <item>
-      <title>Version 1.2.0</title>
+      <title>Version 1.0.1</title>
       <sparkle:releaseNotesLink>https://yourdomain.com/release-notes.html</sparkle:releaseNotesLink>
-      <enclosure url="https://yourdomain.com/YourAppInstaller.exe"
+      <enclosure url="https://github.com/Simon06SVK/ArduWare/Releases/ArduWare.exe"
                  sparkle:version="1.2.0"
                  sparkle:shortVersionString="1.2.0"
                  length="12345678"
