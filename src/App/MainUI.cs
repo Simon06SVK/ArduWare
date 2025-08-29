@@ -12,17 +12,39 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
+public static class WinSparkleInterop
+{
+    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void win_sparkle_init();
+
+    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void win_sparkle_set_appcast_url(string url);
+
+    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern void win_sparkle_check_update_with_ui();
+}
+
 
 namespace ArduWare
 {
     public partial class MainUI : System.Windows.Forms.Form
     {
+        WinSparkleInterop.win_sparkle_set_appcast_url("https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/main/appcast.xml?token=GHSAT0AAAAAADIRM5DF42CAUJ6VXZ7NT6HG2FR5NIQ");
+        WinSparkleInterop.win_sparkle_init();
+    
         SerialPort serialPort = new SerialPort();
         public static string foundPortName;
         bool isConnected = false;
 
         private bool isScanning = false;
         private CancellationTokenSource cts;
+
+        private async void buttonCheckUpdates_Click(object sender, EventArg e)
+        {
+            WinSparkleInterop.win_sparkle_check_update_with_ui();
+        }
 
         private async void buttonConnect_Click(object sender, EventArgs e)
         {
