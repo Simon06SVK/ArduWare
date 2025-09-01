@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj": {}
+    "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj": {}
   },
   "projects": {
-    "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj": {
+    "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj",
+        "projectUniqueName": "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj",
         "projectName": "ArduWareUpdater",
-        "projectPath": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj",
+        "projectPath": "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj",
         "packagesPath": "C:\\Users\\simim\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\obj\\",
+        "outputPath": "C:\\Users\\simim\\ArduWare\\src\\Updater\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,6 +50,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "System.Text.Encodings.Web": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
             "TaskScheduler": {
               "target": "Package",
               "version": "[2.12.2, )"

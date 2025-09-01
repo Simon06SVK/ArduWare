@@ -1,12 +1,6 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ArduWare
@@ -22,7 +16,10 @@ namespace ArduWare
             this.labelCompanyName.Text = AssemblyCompany;
             this.txtDescription.AppendText("V prípade chyby alebo nápadu na vylepšenie ma prosím kontaktujte e-mailom na: simi.manko@gmail.com\n" +
                                            "Kompletný zdrojový kód je dostupný tu: https://github.com/Simon06SVK/ArduWare\n" +
-                                           "Použitú licenciu si môžete prečítať tu: https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/master/LICENSE.txt?token=GHSAT0AAAAAADIRM5DEDYJR42CXM4Q3LQIG2FPKFEA");  
+                                           "Použitú licenciu si môžete prečítať tu: https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/main/LICENSE");
+
+            txtDescription.LinkClicked += txtDescription_LinkClicked;
+
         }
         #region Assembly Attribute Accessors
 
@@ -104,13 +101,20 @@ namespace ArduWare
         }
         #endregion
 
-        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        private void txtDescription_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+            try
             {
-                FileName = e.LinkText,
-                UseShellExecute = true
-            });
+                System.Diagnostics.Process.Start(new ProcessStartInfo
+                {
+                    FileName = e.LinkText,
+                    UseShellExecute = true // Required for .NET Core and .NET 5+
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open link: " + ex.Message);
+            }
         }
     }
 }

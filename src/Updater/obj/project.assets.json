@@ -96,6 +96,28 @@
           }
         }
       },
+      "System.Text.Encodings.Web/9.0.8": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll": {
+            "assetType": "runtime",
+            "rid": "browser"
+          }
+        }
+      },
       "TaskScheduler/2.12.2": {
         "type": "package",
         "dependencies": {
@@ -311,6 +333,38 @@
         "version.txt"
       ]
     },
+    "System.Text.Encodings.Web/9.0.8": {
+      "sha512": "W+LotQsM4wBJ4PG7uRkyul4wqL4Fz7R4ty6uXrCNZUhbaHYANgrPaYR2ZpMVpdCjQEJ17Jr1NMN8hv4SHaHY4A==",
+      "type": "package",
+      "path": "system.text.encodings.web/9.0.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Text.Encodings.Web.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Text.Encodings.Web.targets",
+        "lib/net462/System.Text.Encodings.Web.dll",
+        "lib/net462/System.Text.Encodings.Web.xml",
+        "lib/net8.0/System.Text.Encodings.Web.dll",
+        "lib/net8.0/System.Text.Encodings.Web.xml",
+        "lib/net9.0/System.Text.Encodings.Web.dll",
+        "lib/net9.0/System.Text.Encodings.Web.xml",
+        "lib/netstandard2.0/System.Text.Encodings.Web.dll",
+        "lib/netstandard2.0/System.Text.Encodings.Web.xml",
+        "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll",
+        "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.xml",
+        "runtimes/browser/lib/net9.0/System.Text.Encodings.Web.dll",
+        "runtimes/browser/lib/net9.0/System.Text.Encodings.Web.xml",
+        "system.text.encodings.web.9.0.8.nupkg.sha512",
+        "system.text.encodings.web.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "TaskScheduler/2.12.2": {
       "sha512": "glpAb3VrwfdAofp6PIyAzL0ZeTV7XUJ8muu0oZoTeyU5jtk2sMJ6QAMRRuFbovcaj+SBJiEUGklxIWOqQoxshA==",
       "type": "package",
@@ -444,6 +498,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "System.Text.Encodings.Web >= 9.0.8",
       "TaskScheduler >= 2.12.2"
     ]
   },
@@ -454,11 +509,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj",
+      "projectUniqueName": "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj",
       "projectName": "ArduWareUpdater",
-      "projectPath": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\ArduWareUpdater.csproj",
+      "projectPath": "C:\\Users\\simim\\ArduWare\\src\\Updater\\ArduWareUpdater.csproj",
       "packagesPath": "C:\\Users\\simim\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\simim\\source\\repos\\ArduWareUpdater\\obj\\",
+      "outputPath": "C:\\Users\\simim\\ArduWare\\src\\Updater\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -497,6 +552,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "System.Text.Encodings.Web": {
+            "target": "Package",
+            "version": "[9.0.8, )"
+          },
           "TaskScheduler": {
             "target": "Package",
             "version": "[2.12.2, )"

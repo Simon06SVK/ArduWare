@@ -1,50 +1,25 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 
-public static class WinSparkleInterop
-{
-    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void win_sparkle_init();
 
-    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void win_sparkle_set_appcast_url(string url);
-
-    [DllImport("WinSparkle.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern void win_sparkle_check_update_with_ui();
-}
 
 
 namespace ArduWare
 {
     public partial class MainUI : System.Windows.Forms.Form
     {
-        WinSparkleInterop.win_sparkle_set_appcast_url("https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/main/appcast.xml?token=GHSAT0AAAAAADIRM5DF42CAUJ6VXZ7NT6HG2FR5NIQ");
-        WinSparkleInterop.win_sparkle_init();
-    
         SerialPort serialPort = new SerialPort();
         public static string foundPortName;
         bool isConnected = false;
 
         private bool isScanning = false;
         private CancellationTokenSource cts;
-
-        private async void buttonCheckUpdates_Click(object sender, EventArg e)
-        {
-            WinSparkleInterop.win_sparkle_check_update_with_ui();
-        }
 
         private async void buttonConnect_Click(object sender, EventArgs e)
         {
@@ -109,8 +84,11 @@ namespace ArduWare
                             Log("\nChyba pri pripojení: \n" + ex.Message, Color.White);
                         }
                     }
-                    connectionStatus.Text = "Odpojene";
-                    connectionStatus.BackColor = Color.Red;
+                    else
+                    {
+                        connectionStatus.Text = "Odpojene";
+                        connectionStatus.BackColor = Color.Red;
+                    }
                 }
             }
             else
@@ -122,10 +100,10 @@ namespace ArduWare
             }
         }
 
+
         public MainUI()
         {
             InitializeComponent();
-            var client = new SupabaseClient();
 
             if (isConnected)
             {
@@ -136,6 +114,7 @@ namespace ArduWare
             }
             else
             {
+                Console.WriteLine("Not connected");
                 connectionStatus.Text = "Odpojene";
                 connectionStatus.BackColor = Color.Red;
             }
@@ -147,9 +126,15 @@ namespace ArduWare
             int maxAttempts = 3;
             int attempt = 0;
             bool portFound = false;
-            string savedPort = File.Exists("last_port.txt")
-            ? File.ReadAllText("last_port.txt").Trim()
-            : null;
+            string savedPort = null;
+            string path;
+            string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArduWare");
+
+            if (!Directory.Exists(folderPath))
+            {
+                path = Path.Combine(folderPath, "port.txt");
+                savedPort = File.ReadAllText(path);
+            }
 
             if (!string.IsNullOrEmpty(savedPort))
             {
@@ -164,9 +149,11 @@ namespace ArduWare
                     {
 
                         port.ReadTimeout = 2000;
+                        port.DtrEnable = true;
                         port.Open();
+
                         Thread.Sleep(1500);
-                        port.WriteLine("PING");
+
                         string response = port.ReadLine();
 
                         if (response.Contains("ARDUINO"))
@@ -198,8 +185,6 @@ namespace ArduWare
                 if (ports.Length == 0)
                 {
                     Log("\nNeboli najdene ziadne dostupne porty.\n", Color.White);
-                    Thread.Sleep(5000); // Wait before exiting
-                    Environment.Exit(1);
                     return; // This will never be reached, but required for compilation
                 }
 
@@ -230,12 +215,11 @@ namespace ArduWare
                                     Log($"Zariadenie najdene na porte {portName}\n", Color.White);
                                     try
                                     {
-                                        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "last_port.txt");
-                                        using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-                                        {
-                                            File.WriteAllText(path, portName);
-                                            Log(File.Exists("last_port.txt") ? "File created!" : "File not found.", Color.White);
-                                        }
+                                        folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ArduWare");
+                                        if(!Directory.Exists(folderPath))
+                                            Directory.CreateDirectory(folderPath);
+                                        path = Path.Combine(folderPath, "port.txt");
+                                        File.WriteAllText(path, portName);
                                     }
                                     catch (Exception ex)
                                     {
@@ -297,65 +281,25 @@ namespace ArduWare
                 txtConsole.SelectionColor = color;
                 txtConsole.AppendText(message + Environment.NewLine);
                 txtConsole.SelectionColor = txtConsole.ForeColor;
+                txtConsole.ScrollToCaret();
             }
         }
 
         private void SerialDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            string message = serialPort.ReadLine();
-            Invoke(new Action(() =>
+            try
             {
-                txtConsole.AppendText(message + Environment.NewLine);
-            }));
+                string message = serialPort.ReadExisting(); // Non-blocking
+                Invoke(new Action(() =>
+                {
+                    txtConsole.AppendText(message + Environment.NewLine);
+                }));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Serial read error: " + ex.Message, "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-
-        /*public async Task GetUsersAsync()
-        {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri("https://follmgivhtgsssxdhavk.supabase.co/rest/v1/Database?select=*");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbGxtZ2l2aHRnc3NzeGRoYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MzAxMjAsImV4cCI6MjA3MTEwNjEyMH0.z8jamERe1SkGzerSv8xggA2AeDKWTk8ARkGTRyzCZKU");
-            client.DefaultRequestHeaders.Add("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbGxtZ2l2aHRnc3NzeGRoYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MzAxMjAsImV4cCI6MjA3MTEwNjEyMH0.z8jamERe1SkGzerSv8xggA2AeDKWTk8ARkGTRyzCZKU");
-
-            var response = await client.GetAsync("users"); // Replace 'users' with your table name
-            var json = await response.Content.ReadAsStringAsync();
-            Log(json, Color.DarkGreen);
-        }*/
-
-        /*public async Task<string> LoadDatabaseAsync()
-        {
-            string baseUrl = "https://follmgivhtgsssxdhavk.supabase.co/rest/v1/Database?select=*";
-            string apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbGxtZ2l2aHRnc3NzeGRoYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MzAxMjAsImV4cCI6MjA3MTEwNjEyMH0.z8jamERe1SkGzerSv8xggA2AeDKWTk8ARkGTRyzCZKU";
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(baseUrl);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-                client.DefaultRequestHeaders.Add("apikey", apiKey);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var response = await client.GetAsync("https://follmgivhtgsssxdhavk.supabase.co/rest/v1/Database?select=*");
-                var json = await response.Content.ReadAsStringAsync();
-
-                return json;
-            }
-        }*/
-
-        /*public string FormatJsonToText(string json)
-        {
-            var array = JArray.Parse(json);
-            var sb = new StringBuilder();
-
-            foreach (var item in array)
-            {
-                string id = item["ID"]?.ToString();
-                string title = item["Title"]?.ToString();
-                string level = item["Security level"]?.ToString();
-
-                sb.AppendLine($"{id} - {title} ({level})");
-            }
-
-            return sb.ToString();
-        }*/
 
         private void LoadFingerprintSlots()
         {
@@ -364,21 +308,31 @@ namespace ArduWare
 
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
+                ReadOnly = true,
                 DataPropertyName = "ID",
-                HeaderText = "Slot ID"
+                HeaderText = "ID"
             });
+
+            
 
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
+                ReadOnly = true,
                 DataPropertyName = "Status",
-                HeaderText = "Status"
+                HeaderText = "Stav"
             });
 
             dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "Type",
-                HeaderText = "Type"
+                HeaderText = "Typ"
             });
+            
+            /*dataGridView1.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "Name",
+                HeaderText = "Meno"
+            });*/
 
             dataGridView1.DataSource = GetFingerprintSlots(); // Your slot-fetching method
         }
@@ -391,14 +345,17 @@ namespace ArduWare
 
             for (int i = 1; i <= 128; i++)
             {
-                string type = i <= 99 ? "Permanent" : "Temporary";
+                string type = i <= 5 ? "Admin" : "Pouzivatel";
                 serialPort.WriteLine($"CHECK_SLOT {i}");
 
-                Task.Delay(50).Wait(); // Wait for the sensor to process the command
+                //statusRX.BackColor = Color.Lime;
+                Task.Delay(100).Wait(); // Wait for the sensor to process the command
+                //statusRX.BackColor = Color.Silver;
+                //Task.Delay(50).Wait(); // Wait for the sensor to process the command
 
                 progressBarDataLoad.Value = (i * 100) / 128;
 
-                response = serialPort.ReadLine();
+                response = serialPort.ReadLine().Trim();
 
                 if (response == "yes")
                 {
@@ -420,10 +377,11 @@ namespace ArduWare
                 slots.Add(new FingerprintSlot
                 {
                     ID = i,
-                    Status = isUsed ? "Occupied" : "Empty",
+                    Status = isUsed ? "Obsadene" : "Prazdne",
                     Type = type
                 });
             }
+            progressBarDataLoad.Hide();
 
             return slots;
         }
@@ -435,38 +393,91 @@ namespace ArduWare
             public string Type { get; set; }   // "Permanent" or "Temporary"
         }
 
-
-
         private void buttonHelp_Click(object sender, EventArgs e)
         {
             Help helpForm = new Help();
             var result = helpForm.ShowDialog();
         }
-    }
-}
 
-
-public class SupabaseClient
-{
-    private static readonly string baseUrl = "https://follmgivhtgsssxdhavk.supabase.co/rest/v1/Database?select=*";
-    private static readonly string apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZvbGxtZ2l2aHRnc3NzeGRoYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1MzAxMjAsImV4cCI6MjA3MTEwNjEyMH0.z8jamERe1SkGzerSv8xggA2AeDKWTk8ARkGTRyzCZKU"; // Replace with your actual anon key
-
-    public async Task InsertUserAsync(int id, string title)
-    {
-        using (var client = new HttpClient())
+        private void buttonCheckUpdates_Click(object sender, EventArgs e)
         {
-            client.BaseAddress = new Uri(baseUrl);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-            client.DefaultRequestHeaders.Add("apikey", apiKey);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            WinSparkle.win_sparkle_check_update_with_ui();
+        }
 
-            var json = $"{{\"id\": {id}, \"title\": \"{title}\"}}";
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+        private void buttonAddFP_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                int rowIndex = dataGridView1.CurrentRow.Index;
+                Console.WriteLine(rowIndex+1);
+                string statusValue = dataGridView1.CurrentRow.Cells[1].Value.ToString().ToLower();
 
-            var response = await client.PostAsync("Database", content); 
-            var result = await response.Content.ReadAsStringAsync();
+                if (statusValue == "obsadene")
+                {
+                    var result = MessageBox.Show("Slot obsadeny. Chcete ho prepisat?", "Upozornenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    
+                    if (result == DialogResult.Yes)
+                    {
+                        serialPort.WriteLine($"pridaj {rowIndex+1}");
+                    }
+                    else
+                        return;
+                }
+                else
+                {
+                    serialPort.WriteLine($"pridaj {rowIndex+1}");
+                }
+            }
+        }
 
-            Console.WriteLine($"Response: {response.StatusCode}\n{result}");
+        private void buttonRemoveFP_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+                int rowIndex = dataGridView1.CurrentRow.Index;
+                Console.WriteLine(rowIndex+1);
+                string statusValue = dataGridView1.CurrentRow.Cells[1].Value.ToString().ToLower();
+
+                if (statusValue == "obsadene")
+                {
+                    var result = MessageBox.Show("Naozaj chcete odstranit tento odtlacok?", "Upozornenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    
+                    if (result == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            serialPort.WriteLine($"odstran {rowIndex + 1}");
+                            Console.WriteLine($"odstran {rowIndex + 1}");
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Chyba pri odstranovani: {ex.Message}", "Chyba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                    }
+                    else
+                        return;
+                }
+                else
+                {
+                    MessageBox.Show("Vybrany slot je prazdny.", "Upozornenie", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void buttonSettings_Click(object sender, EventArgs e)
+        {
+            Settings settingsForm = new Settings();
+            settingsForm.StartPosition = FormStartPosition.CenterScreen;
+            settingsForm.Show();
+
+        }
+
+        private void buttonReloadData_Click(object sender, EventArgs e)
+        {
+            progressBarDataLoad.Show();
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = GetFingerprintSlots(); // Your slot-fetching method
         }
     }
 }

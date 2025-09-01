@@ -1,14 +1,43 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+VisualStudioVersion = 17.14.36408.4
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduWare", "src\App\ArduWare.csproj", "{2E22782B-9671-4595-AB5C-B4B448212DAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{B56941CB-DD36-4B93-A83F-55BF18FF9920}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updater", "Updater", "{5BB6BD69-2B0B-4D53-BAFD-A6A34FCCC7F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduWareUpdater", "src\Updater\ArduWareUpdater.csproj", "{A366A63F-4AD1-226B-79FA-9F186120AC64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E22782B-9671-4595-AB5C-B4B448212DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E22782B-9671-4595-AB5C-B4B448212DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E22782B-9671-4595-AB5C-B4B448212DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E22782B-9671-4595-AB5C-B4B448212DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A366A63F-4AD1-226B-79FA-9F186120AC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A366A63F-4AD1-226B-79FA-9F186120AC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A366A63F-4AD1-226B-79FA-9F186120AC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A366A63F-4AD1-226B-79FA-9F186120AC64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E22782B-9671-4595-AB5C-B4B448212DAE} = {B56941CB-DD36-4B93-A83F-55BF18FF9920}
+		{B56941CB-DD36-4B93-A83F-55BF18FF9920} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5BB6BD69-2B0B-4D53-BAFD-A6A34FCCC7F1} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{A366A63F-4AD1-226B-79FA-9F186120AC64} = {5BB6BD69-2B0B-4D53-BAFD-A6A34FCCC7F1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7DF35A5C-694C-452A-9AAA-8888D295F1D4}
 	EndGlobalSection
 EndGlobal

@@ -1,8 +1,5 @@
 ﻿using Microsoft.Win32.TaskScheduler;
-using System;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using SystemTask = System.Threading.Tasks.Task;
@@ -30,14 +27,14 @@ class Program
 
         const string taskName = "ArduWareUpdater";
 
-        if (!IsTaskScheduled(taskName))
+        /*if (!IsTaskScheduled(taskName))
         {
             ScheduleUpdaterTask();
             Console.WriteLine("Naplánovaná automatická kontrola aktualizácií.");
-        }
+        }*/
 
         var checker = new UpdateChecker();
-        var info = await checker.FetchLatestVersionAsync();
+        var info = await checker.FetchlatestAsync();
 
         if (info == null)
         {
@@ -45,13 +42,13 @@ class Program
             return;
         }
 
-        if (checker.IsNewerVersion(info.LatestVersion))
+        if (checker.IsNewerVersion(info.latest))
         {
-            ShowWindow(handle, SW_SHOWMINIMIZED); // Show minimized
+            ShowWindow(handle, SW_SHOWMINIMIZED);
             FlashWindow(handle, true); // Flash taskbar icon
 
-            Console.WriteLine($"Je dostupna nova verzia v{info.LatestVersion}");
-            Console.WriteLine($"Zmeny: {info.ReleaseNotes}");
+            Console.WriteLine($"Je dostupna nova verzia v{info.latest}");
+            Console.WriteLine($"Zmeny: {info.rnotes}");
             Console.WriteLine("Chcete nainstalovat teraz? (Y/N)");
 
             var key = Console.ReadKey(true).Key;
@@ -60,7 +57,7 @@ class Program
                 Console.WriteLine("Stahujem...");
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = info.DownloadUrl,
+                    FileName = info.url,
                     UseShellExecute = true
                 });
             }
@@ -73,7 +70,7 @@ class Program
         {
             Console.WriteLine("Mate najnovsiu verziu.");
         }
-        
+
     }
 
     public static void ScheduleUpdaterTask()
@@ -116,10 +113,10 @@ class Program
 
 public class UpdateChecker
 {
-    private const string VersionUrl = "https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/master/version.json?token=GHSAT0AAAAAADIRM5DFA7IQ35HJOPVF2WKK2FPE5JA";
+    private const string VersionUrl = "https://raw.githubusercontent.com/Simon06SVK/ArduWare/refs/heads/main/version.json";
     private const string CurrentVersion = "1.0"; // Replace with your actual version
 
-    public async Task<VersionInfo> FetchLatestVersionAsync()
+    public async Task<VersionInfo> FetchlatestAsync()
     {
         try
         {
@@ -129,7 +126,10 @@ public class UpdateChecker
         }
         catch (HttpRequestException ex)
         {
-            Console.WriteLine($"Error fetching version info: {ex.Message}");
+            Console.WriteLine($"HTTP request failed: {ex.Message}");
+            if (ex.InnerException != null)
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+
         }
         catch (JsonException ex)
         {
@@ -140,7 +140,7 @@ public class UpdateChecker
             Console.WriteLine($"Unexpected error: {ex.Message}");
         }
         return null;
-}
+    }
 
     public bool IsNewerVersion(string latest)
     {
@@ -149,20 +149,20 @@ public class UpdateChecker
 }
 public class VersionInfo
 {
-    public string LatestVersion { get; set; }
-    public string DownloadUrl { get; set; }
-    public string ReleaseNotes { get; set; }
+    public string latest { get; set; }
+    public string url { get; set; }
+    public string rnotes { get; set; }
 }
 
 // Note: Ensure you have a version.json file at the specified URL with the following structure: 
 // {
-//   "LatestVersion": "1.1",
-//   "DownloadUrl": "
-//   "ReleaseNotes": "Added new features and fixed bugs."
+//   "latest": "1.1",
+//   "url": "
+//   "rnotes": "Added new features and fixed bugs."
 // }
 // Also, make sure to handle exceptions and edge cases in production code.
 //   "
-//     "ReleaseNotes": "Added new features and fixed bugs."
+//     "rnotes": "Added new features and fixed bugs."
 // }
 
 

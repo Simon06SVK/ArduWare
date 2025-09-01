@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ArduWareUpdater")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14fe859eb3acc767a0867847da6712500a1de06b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ArduWareUpdater")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ArduWareUpdater")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
